@@ -24,23 +24,25 @@
 
     body{
       background:#f5f5f5;
+      font-family:Arial;
     }
 
     .main-title{
-      font-size:40px;
+      font-size:42px;
       font-weight:bold;
       text-align:center;
-      margin-bottom:30px;
+      margin-bottom:35px;
     }
 
     .image-card{
       background:white;
-      border-radius:12px;
+      border-radius:15px;
       border:1px solid #ddd;
       padding:15px;
       text-align:center;
       height:100%;
       transition:0.3s;
+      overflow:hidden;
     }
 
     .image-card:hover{
@@ -49,25 +51,27 @@
     }
 
     .image-card img{
-      width:140px;
-      height:140px;
+      width:100%;
+      height:220px;
       object-fit:contain;
+      border-radius:10px;
+      background:#fff;
       border:1px solid #eee;
-      margin-bottom:10px;
-      background:white;
+      margin-bottom:15px;
     }
 
     .image-name{
-      font-size:16px;
+      font-size:15px;
       font-weight:bold;
       word-break:break-word;
+      margin-bottom:10px;
     }
 
     .stats-box{
       background:white;
-      padding:15px;
-      border-radius:10px;
-      margin-bottom:20px;
+      padding:20px;
+      border-radius:15px;
+      margin-bottom:25px;
       box-shadow:0px 2px 10px rgba(0,0,0,0.05);
     }
 
@@ -77,13 +81,30 @@
       left:0;
       width:100%;
       height:100%;
-      background:rgba(0,0,0,0.5);
+      background:rgba(0,0,0,0.6);
       display:none;
       align-items:center;
       justify-content:center;
       color:white;
-      font-size:30px;
+      font-size:32px;
       z-index:999;
+      font-weight:bold;
+    }
+
+    .preview-box{
+      background:white;
+      border-radius:15px;
+      padding:15px;
+      border:1px solid #ddd;
+      text-align:center;
+      margin-top:10px;
+    }
+
+    .preview-box img{
+      width:100%;
+      max-height:250px;
+      object-fit:contain;
+      border-radius:10px;
     }
 
   </style>
@@ -107,10 +128,8 @@
     Image Compressor & Downloader
   </div>
 
-
-
   <!-- Inputs -->
-  <div class="row align-items-end">
+  <div class="row">
 
     <!-- Folder -->
     <div class="col-md-4 mb-3">
@@ -130,8 +149,6 @@
 
     </div>
 
-
-
     <!-- Multiple Images -->
     <div class="col-md-4 mb-3">
 
@@ -149,8 +166,6 @@
 
     </div>
 
-
-
     <!-- Compression -->
     <div class="col-md-2 mb-3">
 
@@ -158,65 +173,31 @@
         Compress Size
       </label>
 
-<select
-  id="sizeSelect"
-  class="form-select"
->
+      <select
+        id="sizeSelect"
+        class="form-select"
+      >
 
-  <option value="10">
-    10 KB
-  </option>
+        <option value="10">10 KB</option>
+        <option value="20">20 KB</option>
+        <option value="30">30 KB</option>
+        <option value="40">40 KB</option>
+        <option value="50">50 KB</option>
+        <option value="60">60 KB</option>
+        <option value="70">70 KB</option>
+        <option value="80">80 KB</option>
+        <option value="90">90 KB</option>
+        <option value="100" selected>100 KB</option>
 
-  <option value="20">
-    20 KB
-  </option>
-
-  <option value="30">
-    30 KB
-  </option>
-
-  <option value="40">
-    40 KB
-  </option>
-
-  <option value="50">
-    50 KB
-  </option>
-
-  <option value="60">
-    60 KB
-  </option>
-
-  <option value="70">
-    70 KB
-  </option>
-
-  <option value="80">
-    80 KB
-  </option>
-
-  <option value="90">
-    90 KB
-  </option>
-
-  <option
-    value="100"
-    selected
-  >
-    100 KB
-  </option>
-
-</select>
+      </select>
 
     </div>
-
-
 
     <!-- Show Button -->
     <div class="col-md-2 mb-3">
 
       <button
-        class="btn btn-primary w-100"
+        class="btn btn-primary w-100" style="margin-top:32px"
         onclick="processFiles()"
       >
         Show Images
@@ -226,8 +207,6 @@
 
   </div>
 
-
-
   <!-- Download Button -->
   <div class="mb-4">
 
@@ -236,12 +215,10 @@
       class="btn btn-success d-none"
       onclick="downloadAllImages()"
     >
-      Download Compressed Images
+      Download All Images
     </button>
 
   </div>
-
-
 
   <!-- Stats -->
   <div
@@ -257,9 +234,9 @@
           Total Images
         </h5>
 
-        <h3 id="totalImages">
+        <h2 id="totalImages">
           0
-        </h3>
+        </h2>
 
       </div>
 
@@ -269,17 +246,15 @@
           Compression Size
         </h5>
 
-        <h3 id="selectedSize">
+        <h2 id="selectedSize">
           100 KB
-        </h3>
+        </h2>
 
       </div>
 
     </div>
 
   </div>
-
-
 
   <!-- Images -->
   <div
@@ -288,8 +263,6 @@
   ></div>
 
 </div>
-
-
 
 <script>
 
@@ -409,7 +382,7 @@
 
 
     // SHOW IMAGES
-    uniqueImages.forEach(file => {
+    uniqueImages.forEach((file,index) => {
 
       const imageUrl =
         URL.createObjectURL(file);
@@ -430,6 +403,17 @@
 
           <div class="image-name">
             ${file.name}
+          </div>
+
+          <div class="mb-2">
+
+            <button
+              class="btn btn-primary btn-sm w-100"
+              onclick="downloadSingleImage(${index})"
+            >
+              Download Image
+            </button>
+
           </div>
 
         </div>
@@ -472,101 +456,221 @@
 
 
 
-  // COMPRESS IMAGE
-  function compressImage(
-    file,
-    targetKB
-  ){
+
+  // COMPRESS IMAGE EXACT KB
+  function compressImage(file, targetKB){
 
     return new Promise((resolve) => {
 
-      const img =
-        new Image();
+      const img = new Image();
 
-      const reader =
-        new FileReader();
+      const reader = new FileReader();
 
       reader.readAsDataURL(file);
 
       reader.onload = e => {
 
-        img.src =
-          e.target.result;
+        img.src = e.target.result;
 
       };
 
 
 
-      img.onload = () => {
+      img.onload = async () => {
 
         const canvas =
-          document.createElement(
-            "canvas"
-          );
+          document.createElement("canvas");
 
         const ctx =
           canvas.getContext("2d");
 
-        canvas.width =
+
+
+        let width =
           img.width;
 
-        canvas.height =
+        let height =
           img.height;
-
-        ctx.drawImage(
-          img,
-          0,
-          0
-        );
-
-
 
         let quality = 0.9;
 
-
-
-        function attempt(){
-
-          canvas.toBlob(
-            (blob) => {
-
-              const sizeKB =
-                blob.size / 1024;
+        let blob;
 
 
 
-              if(
-                sizeKB <= targetKB ||
-                quality <= 0.1
-              ){
+        async function generateBlob(){
 
-                resolve(blob);
+          canvas.width = width;
 
-              }
-              else{
+          canvas.height = height;
 
-                quality -= 0.05;
-
-                attempt();
-
-              }
-
-            },
-            "image/jpeg",
-            quality
+          ctx.clearRect(
+            0,
+            0,
+            width,
+            height
           );
+
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+
+
+          return new Promise(resolveBlob => {
+
+            canvas.toBlob(
+              resolveBlob,
+              "image/jpeg",
+              quality
+            );
+
+          });
 
         }
 
 
 
-        attempt();
+        while(true){
+
+          blob =
+            await generateBlob();
+
+          const sizeKB =
+            blob.size / 1024;
+
+
+
+          if(sizeKB <= targetKB){
+
+            break;
+
+          }
+
+
+
+          if(quality > 0.1){
+
+            quality -= 0.05;
+
+          }
+          else{
+
+            width *= 0.9;
+
+            height *= 0.9;
+
+          }
+
+        }
+
+
+
+        resolve(blob);
 
       };
 
     });
 
   }
+
+
+
+
+
+
+
+  // DOWNLOAD SINGLE IMAGE
+  async function downloadSingleImage(index){
+
+    try{
+
+      const file =
+        allImages[index];
+
+      const targetKB =
+        parseInt(
+          document.getElementById(
+            "sizeSelect"
+          ).value
+        );
+
+
+
+      document
+        .getElementById("loading")
+        .style.display = "flex";
+
+
+
+      const compressedBlob =
+        await compressImage(
+          file,
+          targetKB
+        );
+
+
+
+      const url =
+        URL.createObjectURL(
+          compressedBlob
+        );
+
+
+
+      const a =
+        document.createElement("a");
+
+
+
+      a.href = url;
+
+      a.download =
+        file.name.split(".")[0] +
+        "_" +
+        targetKB +
+        "KB.jpg";
+
+
+
+      document.body.appendChild(a);
+
+      a.click();
+
+      document.body.removeChild(a);
+
+
+
+      URL.revokeObjectURL(url);
+
+
+
+      document
+        .getElementById("loading")
+        .style.display = "none";
+
+    }
+    catch(error){
+
+      console.log(error);
+
+      document
+        .getElementById("loading")
+        .style.display = "none";
+
+      alert(
+        "Download failed"
+      );
+
+    }
+
+  }
+
+
 
 
 
@@ -589,7 +693,6 @@
 
 
 
-      // BROWSER SUPPORT
       if(
         !window.showDirectoryPicker
       ){
@@ -603,7 +706,6 @@
 
 
 
-      // SHOW LOADING
       document
         .getElementById("loading")
         .style.display = "flex";
@@ -674,13 +776,10 @@
 
 
 
-        // UNIQUE FILE NAME
         const uniqueName =
           originalName +
           "_" +
           i +
-          "_" +
-          Date.now() +
           ".jpg";
 
 
@@ -712,7 +811,6 @@
 
 
 
-      // HIDE LOADING
       document
         .getElementById("loading")
         .style.display = "none";
